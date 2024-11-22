@@ -6,6 +6,8 @@ Dette prosjektet er en oppgave i forbindelse med et jobbintervju hos NAV IT Høs
 
 ## Oppsett
 
+### Installasjon
+
 Prosjektet er satt opp med uv som Python pakkebehandler. For å installere uv, se instruksjoner [her](https://docs.astral.sh/uv/guides/install-python/).
 
 Deretter kan prosjektets avhengigheter installeres med:
@@ -16,6 +18,22 @@ uv sync
 ```
 
 ## Bruk (WiP)
+
+## Verktøyer
+
+### Github Actions
+
+For å kjøre workflows lokalt anbefales det å bruke [Act](https://github.com/nektos/act). Dette kan [installeres som en extension i Github actions CLI-verktøyet](https://nektosact.com/installation/gh.html).
+
+### Linting
+
+Linting kan gjøres via flake8:
+
+```bash
+uvx flake8 src/ tests/
+```
+
+Flake8 bruker konfigurasjonsdetaljer fra `setup.cfg`.
 
 ## Testing (WiP)
 
