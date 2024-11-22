@@ -1,11 +1,11 @@
 name: linting
 
 on:
-    - push
+  - push
 
 jobs:
   lint:
-    name: pylint
+    name: flake8
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,7 +14,7 @@ jobs:
         uses: astral-sh/setup-uv@v3
       
       - name: Run pylint on src
-        run: uvx pylint src/
+        run: uvx flake8 src/
       
       - name: Run pylint on tests
-        run: uvx pylint tests/
+        run: uvx flake8 tests/
