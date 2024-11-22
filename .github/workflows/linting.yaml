@@ -5,7 +5,7 @@ on:
 
 jobs:
   lint:
-    name: python
+    name: pylint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
