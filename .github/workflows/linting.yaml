@@ -1,0 +1,17 @@
+name: linting
+
+on:
+    - push
+
+jobs:
+  lint:
+    name: pylint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+      
+      - name: Install dev dependencies
+        run: uv run pylint src/
