@@ -1,97 +1,39 @@
 import sqlite3
 from pathlib import Path
 
-
-def create_table_poststed(c: sqlite3.Cursor):
-    c.execute('''
-        CREATE TABLE Poststed (
-            Postnummer          TEXT        NOT NULL    PRIMARY KEY,
-            Navn                TEXT
-        );
-    ''')
+from sqlite_loader.config import SQLS_FOLDER_PATH
 
 
-def create_table_adresse(c: sqlite3.Cursor):
-    c.execute('''
-        CREATE TABLE Adresse (
-            Id                  INTEGER     NOT NULL    PRIMARY KEY,
-            Postnummer          TEXT        NOT NULL,
-            Gateadresse         TEXT        NOT NULL,
-            FOREIGN KEY (Postnummer) REFERENCES Poststed(Postnummer)
-        );
-    ''')
+def _create_table_poststed(c: sqlite3.Cursor):
+    c.execute((SQLS_FOLDER_PATH / 'create_table_poststed.sql').read_text())
 
 
-def create_table_aldergruppe(c: sqlite3.Cursor):
-    c.execute('''
-        CREATE TABLE Aldersgruppe (
-            Id                  INTEGER     NOT NULL    PRIMARY KEY,
-            Navn                TEXT        NOT NULL    UNIQUE
-        );
-    ''')
+def _create_table_adresse(c: sqlite3.Cursor):
+    c.execute((SQLS_FOLDER_PATH / 'create_table_adresse.sql').read_text())
 
 
-def create_table_medlemstype(c: sqlite3.Cursor):
-    c.execute('''
-        CREATE TABLE Medlemstype (
-            Id                  INTEGER     NOT NULL    PRIMARY KEY,
-            Navn                TEXT        NOT NULL,
-            AldersgruppeId      INTEGER     NOT NULL,
-            FOREIGN KEY (AldersgruppeId) REFERENCES Aldersgruppe(Id)
-        );
-    ''')
+def _create_table_aldergruppe(c: sqlite3.Cursor):
+    c.execute((SQLS_FOLDER_PATH / 'create_table_aldergruppe.sql').read_text())
 
 
-def create_table_kjonn(c: sqlite3.Cursor):
-    c.execute('''
-        CREATE TABLE Kjonn (
-            Id                  INTEGER     NOT NULL    PRIMARY KEY,
-            Kjonn               TEXT        NOT NULL    UNIQUE
-        );
-    ''')
+def _create_table_medlemstype(c: sqlite3.Cursor):
+    c.execute((SQLS_FOLDER_PATH / 'create_table_medlemstype.sql').read_text())
 
 
-def create_table_kontigent(c: sqlite3.Cursor):
-    c.execute('''
-        CREATE TABLE Kontigent (
-            Id                  INTEGER     NOT NULL    PRIMARY KEY,
-            MedlemstypeId       INTEGER     NOT NULL,
-            Periode             INTEGER     NOT NULL,
-            KontingentNOK       INTEGER     NOT NULL,
-            FOREIGN KEY (MedlemstypeId) REFERENCES Medlemstype(Id)
-        );
-        ''')
+def _create_table_kjonn(c: sqlite3.Cursor):
+    c.execute((SQLS_FOLDER_PATH / 'create_table_kjonn.sql').read_text())
 
 
-def create_table_medlem(c: sqlite3.Cursor):
-    c.execute('''
-        CREATE TABLE Medlem (
-            Id                  INTEGER     NOT NULL    PRIMARY KEY,
-            Fornavn             TEXT        NOT NULL,
-            Etternavn           TEXT        NOT NULL,
-            Fodselsdato         TEXT        NOT NULL,
-            KjonnId             INTEGER     NOT NULL,
-            MedlemstypeId       INTEGER     NOT NULL,
-            AdresseId           INTEGER     NOT NULL,
-            FOREIGN KEY (KjonnId) REFERENCES Kjonn(Id),
-            FOREIGN KEY (MedlemstypeId) REFERENCES Medlemstype(Id),
-            FOREIGN KEY (AdresseId) REFERENCES Adresse(Id)
-        );
-        ''')
+def _create_table_kontigent(c: sqlite3.Cursor):
+    c.execute((SQLS_FOLDER_PATH / 'create_table_kontigent.sql').read_text())
 
 
-def create_table_betaling(c: sqlite3.Cursor):
-    c.execute('''
-        CREATE TABLE Betaling (
-            Id                  INTEGER     NOT NULL    PRIMARY KEY,
-            KontigentId         INTEGER     NOT NULL,
-            MedlemsId           INTEGER     NOT NULL,
-            BelopNOK            INTEGER     NOT NULL,
-            InnbetaltDato      TEXT        NOT NULL,
-            FOREIGN KEY (KontigentId) REFERENCES Kontigent(Id),
-            FOREIGN KEY (MedlemsId) REFERENCES Medlem(Id)
-        );
-    ''')
+def _create_table_medlem(c: sqlite3.Cursor):
+    c.execute((SQLS_FOLDER_PATH / 'create_table_medlem.sql').read_text())
+
+
+def _create_table_betaling(c: sqlite3.Cursor):
+    c.execute((SQLS_FOLDER_PATH / 'create_table_betaling.sql').read_text())
 
 
 def init_database(db_path: Path, overwrite: bool = False):
@@ -107,14 +49,14 @@ def init_database(db_path: Path, overwrite: bool = False):
         c = conn.cursor()
         c.execute('begin')
         try:
-            create_table_adresse(c)
-            create_table_poststed(c)
-            create_table_aldergruppe(c)
-            create_table_medlemstype(c)
-            create_table_kjonn(c)
-            create_table_kontigent(c)
-            create_table_medlem(c)
-            create_table_betaling(c)
+            _create_table_adresse(c)
+            _create_table_poststed(c)
+            _create_table_aldergruppe(c)
+            _create_table_medlemstype(c)
+            _create_table_kjonn(c)
+            _create_table_kontigent(c)
+            _create_table_medlem(c)
+            _create_table_betaling(c)
             c.execute('commit')
         except sqlite3.Error as e:
             print("Kunne ikke opprette tabellene, ruller tilbake endringer.")
