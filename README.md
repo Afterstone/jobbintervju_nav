@@ -13,7 +13,7 @@ Prosjektet er satt opp med uv som Python pakkebehandler. For å installere uv, s
 Deretter kan prosjektets avhengigheter installeres med:
 
 ```bash
-# Kjør alternativt 'uv sync' for å lage et virtuelt Python-miljø.
+# Kjør alternativt 'uv venv' for å lage et virtuelt Python-miljø.
 uv sync
 ```
 
