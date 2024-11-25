@@ -1,0 +1,24 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Module",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "sqlite_loader.main",
+            "args": [
+                "--filsti-medlemmer",
+                "data/Medlemmer.csv",
+                "--filsti-kontigent",
+                "data/Kontigent.csv",
+                "--filsti-betalinger",
+                "data/Betalinger.csv",
+                "--filsti-database",
+                "data/Medlemsdata.db"
+            ]
+        }
+    ]
+}
