@@ -13,13 +13,34 @@ Prosjektet er satt opp med uv som Python pakkebehandler. For å installere uv, s
 Deretter kan prosjektets avhengigheter installeres med:
 
 ```bash
-# Kjør alternativt 'uv venv' for å lage et virtuelt Python-miljø.
-uv sync
+uv venv
+uv pip install .
 ```
 
-## Bruk (WiP)
+## Bruk
 
-## Verktøyer
+For å laste data fra CSV-filene til en SQLite database, legg dem i en mappe kalt `data/` i prosjektets rot. Man kan deretter kjøre følgende kommdo:
+
+```bash
+uv run python -m sqlite_loader.main \
+    --filsti-medlemmer "data/Medlemmer.csv" \
+    --filsti-kontigent "data/Kontigent.csv" \
+    --filsti-betalinger "data/Betalinger.csv" \
+    --filsti-database "data/Medlemsdata.db"
+```
+
+Man kan naturligvis bytte ut filstiene, om dette er ønskelig.
+
+## Utvikling
+
+### Installasjon
+
+For å installere med utviklingsavhengigheter, kjør:
+
+```bash
+uv sync
+uv pip install -e .[dev]
+```
 
 ### Github Actions
 
@@ -35,6 +56,10 @@ uvx flake8 src/ tests/
 
 Flake8 bruker konfigurasjonsdetaljer fra `setup.cfg`.
 
-## Testing (WiP)
+### Notebooks (WiP)
 
-## Notebooks (WiP)
+Notebooks for analyse av dataene ligger i `notebooks/`. Disse kan kjøres med Jupyter Notebook eller Jupyter Lab, men anses som out of scope for oppgaven.
+
+### Testing (WiP)
+
+Droppet i oppgaven grunnet tid.
