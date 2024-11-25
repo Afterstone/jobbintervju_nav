@@ -156,13 +156,6 @@ def get_df_betalinger(csv_path: Path, csv_separator: str = ';') -> pd.DataFrame:
     return df_betalinger
 
 
-def warn_if_case_insensitive_duplicates(strs: t.Sequence[str]) -> None:
-    set_strs = set(strs)
-    set_strs_lower = set(str.lower() for str in strs)
-    if len(set_strs) != len(set_strs_lower):
-        print('ADVARSEL: Det er duplikater i listen av aldersgrupper. Disse vil bli lagt til i databasen som unike verdier.')
-
-
 def add_poststed(db_path: Path, postnummer: t.Sequence[int], poststed: t.Sequence[str]) -> None:
     error = False
     for p in postnummer:
@@ -204,7 +197,6 @@ def add_adresse(db_path: Path, gateadresse: t.Sequence[str], postnummer: t.Seque
 
 
 def add_aldersgrupper(db_path: Path, aldersgrupper: t.Sequence[str]) -> None:
-    warn_if_case_insensitive_duplicates(aldersgrupper)
     db.insert_into_table(
         db_path=db_path,
         table_name='Aldersgruppe',
@@ -214,8 +206,6 @@ def add_aldersgrupper(db_path: Path, aldersgrupper: t.Sequence[str]) -> None:
 
 
 def add_medlemstype(db_path: Path, medlemstyper: t.Sequence[str], aldersgrupper: t.Sequence[str]) -> None:
-    warn_if_case_insensitive_duplicates(medlemstyper)
-
     aldersgruppe_rows = db.get_rows(db_path=db_path, table_name='Aldersgruppe', columns=['Id', 'Navn'])
     aldersgruppe_dict = {navn.lower(): id for id, navn in aldersgruppe_rows}
 
@@ -232,7 +222,6 @@ def add_medlemstype(db_path: Path, medlemstyper: t.Sequence[str], aldersgrupper:
 
 
 def add_kjonn(db_path: Path, kjonn: t.Sequence[str]) -> None:
-    warn_if_case_insensitive_duplicates(kjonn)
     db.insert_into_table(
         db_path=db_path,
         table_name='Kjonn',
