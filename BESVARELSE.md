@@ -86,7 +86,6 @@ Har satt opp forslag til ER-diagram og datatyper i [diagrams/database.md](diagra
   - Det er flere måter å gjøre dette på.
   - Kompleksitet i tråd med bruker.
   - Muligheter for utvidelse.
-  - Adresse kunne vært brutt ytterligere ned.
   - Sqlite har fleksible datatyper.
   - Kolonnevalg
     - Periode - årstall (text/int) vs. start+sluttdato (text)
@@ -94,5 +93,31 @@ Har satt opp forslag til ER-diagram og datatyper i [diagrams/database.md](diagra
       - Postnummer - int vs. text
     - 
 - Hvilke SQL-spørringer kan man kjøre mot databasen for å sjekke om medlemmet med medlemsnummer 57 har betalt riktig kontingent?
+  
+```sql
+SELECT
+    M.id AS MedlemsId,
+    M.Fornavn,
+    M.Etternavn,
+    M.Fodselsdato,
+    (DATE('now') - M.Fodselsdato) AS Alder,
+    AG.Navn AS Aldersgruppe,
+    CASE
+      WHEN AG.Navn = '10-17' THEN CASE WHEN (DATE('now') - M.Fodselsdato) >= 10 AND (DATE('now') - M.Fodselsdato) < 17 THEN true ELSE false END
+      WHEN AG.Navn = '18-60' THEN CASE WHEN (DATE('now') - M.Fodselsdato) >= 18 AND (DATE('now') - M.Fodselsdato) < 60 THEN true ELSE false END
+      WHEN AG.Navn = '60 +' THEN CASE WHEN (DATE('now') - M.Fodselsdato) >= 60 THEN true ELSE false END
+      ELSE false
+    END AS KontigentGyldig
+FROM
+  Medlem AS M
+  LEFT JOIN Betaling AS B ON M.id = B.MedlemsId
+  LEFT JOIN Kontigent AS K ON K.Id = B.KontigentId
+  LEFT JOIN Medlemstype AS MT ON MT.Id = m.MedlemstypeId
+  LEFT JOIN Aldersgruppe AS AG ON AG.Id = MT.AldersgruppeId
+WHERE
+  -- M.id = 57
+  KontigentGyldig = false
+;
+```
 
 I intervjuet ønsker vi at du presenterer ditt svar på oppgaven og gjør en demo av Python programmet. Du velger selv presentasjonsform, og du har 15 minutter til rådighet.
