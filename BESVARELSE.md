@@ -115,8 +115,8 @@ FROM
   LEFT JOIN Medlemstype AS MT ON MT.Id = m.MedlemstypeId
   LEFT JOIN Aldersgruppe AS AG ON AG.Id = MT.AldersgruppeId
 WHERE
-  -- M.id = 57
-  KontigentGyldig = false
+  M.id = 57
+  -- KontigentGyldig = false
 ;
 ```
 
