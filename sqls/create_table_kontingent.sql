@@ -1,4 +1,4 @@
-CREATE TABLE Kontigent (
+CREATE TABLE Kontingent (
     Id                  INTEGER     NOT NULL    PRIMARY KEY,
     MedlemstypeId       INTEGER     NOT NULL,
     Periode             INTEGER     NOT NULL,

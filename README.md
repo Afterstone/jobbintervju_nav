@@ -23,7 +23,7 @@ For å laste data fra CSV-filene til en SQLite database, legg dem i en mappe kal
 ```bash
 uv run python -m sqlite_loader.main \
     --filsti-medlemmer "data/Medlemmer.csv" \
-    --filsti-kontigent "data/Kontigent.csv" \
+    --filsti-kontingent "data/Kontingent.csv" \
     --filsti-betalinger "data/Betalinger.csv" \
     --filsti-database "data/Medlemsdata.db"
 ```

@@ -12,8 +12,8 @@
             "args": [
                 "--filsti-medlemmer",
                 "data/Medlemmer.csv",
-                "--filsti-kontigent",
-                "data/Kontigent.csv",
+                "--filsti-kontingent",
+                "data/Kontingent.csv",
                 "--filsti-betalinger",
                 "data/Betalinger.csv",
                 "--filsti-database",
