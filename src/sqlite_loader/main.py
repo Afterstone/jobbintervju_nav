@@ -13,7 +13,7 @@ import sqlite_loader.db as db
 class Args:
     path_db: Path
     path_medlemmer_csv: Path
-    path_kontigent_csv: Path
+    path_kontingent_csv: Path
     path_betalinger_csv: Path
     csv_separator: str
 
@@ -21,14 +21,14 @@ class Args:
         file_not_found_message = 'Fant ikke filen(e) {}. Sjekk at filstien er riktig.'
         if not all((
             self.path_medlemmer_csv.exists(),
-            self.path_kontigent_csv.exists(),
+            self.path_kontingent_csv.exists(),
             self.path_betalinger_csv.exists(),
         )):
             files_not_found = []
             if not self.path_medlemmer_csv.exists():
                 files_not_found.append(self.path_medlemmer_csv)
-            if not self.path_kontigent_csv.exists():
-                files_not_found.append(self.path_kontigent_csv)
+            if not self.path_kontingent_csv.exists():
+                files_not_found.append(self.path_kontingent_csv)
             if not self.path_betalinger_csv.exists():
                 files_not_found.append(self.path_betalinger_csv)
 
@@ -40,7 +40,7 @@ def parse_args():
     parser.add_argument('--filsti-database', type=str, help='Filstien der databasen vil bli lagret', default='./data/medlemsdata.db')
 
     parser.add_argument('--filsti-medlemmer', type=str, help='Filstien til medlemsdata', default='./data/Medlemmer.csv')
-    parser.add_argument('--filsti-kontigent', type=str, help='Filstien til kontigentdata', default='./data/Kontingent.csv')
+    parser.add_argument('--filsti-kontingent', type=str, help='Filstien til kontingentdata', default='./data/Kontingent.csv')
     parser.add_argument('--filsti-betalinger', type=str, help='Filstien til betalingsdata', default='./data/Betalinger.csv')
 
     parser.add_argument('--csv-separator', type=str, help='Separator for CSV-filene', default=';')
@@ -50,7 +50,7 @@ def parse_args():
     args = Args(
         path_db=Path(args.filsti_database),
         path_medlemmer_csv=Path(args.filsti_medlemmer),
-        path_kontigent_csv=Path(args.filsti_kontigent),
+        path_kontingent_csv=Path(args.filsti_kontingent),
         path_betalinger_csv=Path(args.filsti_betalinger),
         csv_separator=args.csv_separator,
     )
@@ -125,24 +125,24 @@ def get_df_medlemmer(
     return df_medlemmer
 
 
-def get_df_kontigent(csv_path: Path, csv_separator: str = ';') -> pd.DataFrame:
+def get_df_kontingent(csv_path: Path, csv_separator: str = ';') -> pd.DataFrame:
     expected_dtypes: dict[str, str] = {'Medlemstype': 'object', 'Kontingent': 'int64', 'Periode': 'int64', 'Aldersgruppe': 'object'}
-    df_kontigent = pd.read_csv(csv_path, sep=csv_separator)
+    df_kontingent = pd.read_csv(csv_path, sep=csv_separator)
     check_df_has_expected_column_names(
-        df=df_kontigent,
+        df=df_kontingent,
         label=str(csv_path),
         expected_columns=set(expected_dtypes.keys()),
     )
-    df_kontigent = remove_empty_cols(df_kontigent)
+    df_kontingent = remove_empty_cols(df_kontingent)
     check_df_has_correct_data_types(
-        df=df_kontigent,
+        df=df_kontingent,
         label=str(csv_path),
         expected_dtypes=expected_dtypes,
     )
-    check_df_has_nan_values(df_kontigent, str(csv_path))
-    df_kontigent = strip_trailing_whitespace(df_kontigent)
+    check_df_has_nan_values(df_kontingent, str(csv_path))
+    df_kontingent = strip_trailing_whitespace(df_kontingent)
 
-    return df_kontigent
+    return df_kontingent
 
 
 def get_df_betalinger(csv_path: Path, csv_separator: str = ';') -> pd.DataFrame:
@@ -239,39 +239,39 @@ def add_kjonn(db_path: Path, kjonn: t.Sequence[str]) -> None:
     )
 
 
-def add_kontigent(db_path: Path, df: pd.DataFrame) -> None:
+def add_kontingent(db_path: Path, df: pd.DataFrame) -> None:
     df = df.copy()
 
     medlemstype_rows = db.get_rows(db_path=db_path, table_name='Medlemstype', columns=['Id', 'Navn'])
     medlemstype_dict = {navn: id for id, navn in medlemstype_rows}
     df['MedlemstypeId'] = df['Medlemstype'].map(medlemstype_dict)
 
-    kontigent_tuples = df[['MedlemstypeId', 'Periode', 'Kontingent']].values.tolist()
+    kontingent_tuples = df[['MedlemstypeId', 'Periode', 'Kontingent']].values.tolist()
 
     db.insert_into_table(
         db_path=db_path,
-        table_name='Kontigent',
+        table_name='Kontingent',
         columns=['MedlemstypeId', 'Periode', 'KontingentNOK'],
-        values=kontigent_tuples,
+        values=kontingent_tuples,
     )
 
 
 def add_betalinger(db_path: Path, df: pd.DataFrame) -> None:
     df = df.copy()
 
-    kontigent_rows = db.get_rows(db_path=db_path, table_name='Kontigent', columns=['Id', 'MedlemstypeId', 'Periode'])
-    kontigent_dict = {(medlemstype_id, periode): id for id, medlemstype_id, periode in kontigent_rows}
+    kontingent_rows = db.get_rows(db_path=db_path, table_name='Kontingent', columns=['Id', 'MedlemstypeId', 'Periode'])
+    kontingent_dict = {(medlemstype_id, periode): id for id, medlemstype_id, periode in kontingent_rows}
     medlem_rows = db.get_rows(db_path=db_path, table_name='Medlem', columns=['Id', 'MedlemstypeId'])
     medlem_dict = {id: medlemstype_id for id, medlemstype_id in medlem_rows}
-    df['KontigentId'] = df.apply(lambda x: kontigent_dict[(medlem_dict[x['Medlemsnummer']], x['Periode'])], axis=1)
+    df['KontingentId'] = df.apply(lambda x: kontingent_dict[(medlem_dict[x['Medlemsnummer']], x['Periode'])], axis=1)
     df['InnbetaltDatoIso'] = pd.to_datetime(df['InnbetaltDato'], format='%d.%m.%Y').dt.strftime('%Y-%m-%d')
 
-    betalinger_tuples = df[['KontigentId', 'Medlemsnummer', 'Beløp', 'InnbetaltDatoIso']].values.tolist()
+    betalinger_tuples = df[['KontingentId', 'Medlemsnummer', 'Beløp', 'InnbetaltDatoIso']].values.tolist()
 
     db.insert_into_table(
         db_path=db_path,
         table_name='Betaling',
-        columns=['KontigentId', 'MedlemsId', 'BelopNOK', 'InnbetaltDato'],
+        columns=['KontingentId', 'MedlemsId', 'BelopNOK', 'InnbetaltDato'],
         values=betalinger_tuples,
     )
 
@@ -332,7 +332,7 @@ def main():
     db.init_database(db_path=args.path_db, overwrite=True)
 
     df_medlemmer = get_df_medlemmer(csv_path=args.path_medlemmer_csv, csv_separator=args.csv_separator)
-    df_kontigent = get_df_kontigent(csv_path=args.path_kontigent_csv, csv_separator=args.csv_separator)
+    df_kontingent = get_df_kontingent(csv_path=args.path_kontingent_csv, csv_separator=args.csv_separator)
     df_betalinger = get_df_betalinger(csv_path=args.path_betalinger_csv, csv_separator=args.csv_separator)
 
     print("Legger inn poststed...")
@@ -342,16 +342,16 @@ def main():
     add_adresse(db_path=args.path_db, gateadresse=df_medlemmer['Gateadresse'].tolist(), postnummer=df_medlemmer['Postnummer'].tolist())
 
     print("Legger inn aldersgrupper...")
-    add_aldersgrupper(db_path=args.path_db, aldersgrupper=df_kontigent['Aldersgruppe'].tolist())
+    add_aldersgrupper(db_path=args.path_db, aldersgrupper=df_kontingent['Aldersgruppe'].tolist())
 
     print("Legger inn medlemstype...")
-    add_medlemstype(db_path=args.path_db, medlemstyper=df_kontigent['Medlemstype'].tolist(), aldersgrupper=df_kontigent['Aldersgruppe'].tolist())
+    add_medlemstype(db_path=args.path_db, medlemstyper=df_kontingent['Medlemstype'].tolist(), aldersgrupper=df_kontingent['Aldersgruppe'].tolist())
 
     print("Legger inn kjønn...")
     add_kjonn(db_path=args.path_db, kjonn=df_medlemmer['Kjønn'].tolist())
 
-    print("Legger inn kontigent...")
-    add_kontigent(db_path=args.path_db, df=df_kontigent)
+    print("Legger inn kontingent...")
+    add_kontingent(db_path=args.path_db, df=df_kontingent)
 
     print("Legger inn medlemmer...")
     add_medlemmer(db_path=args.path_db, df=df_medlemmer)

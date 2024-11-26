@@ -61,7 +61,7 @@ Går så videre til å analysere dataene. I fila [notebooks/overview.ipynb](note
 - Flere kolonnenavn har mellomrom i seg.
 - Betalinger
   - Noen verdier kan ses på som outliers, ref. Periode og Innbetalt_dato.
-- Kontigent
+- Kontingent
   - Flere kolonner har mellomrom i verdiene.
   - Et kolonnenavn har liten forbokstav.
 - Medlemmer
@@ -107,19 +107,18 @@ SELECT
       WHEN AG.Navn = '18-60' THEN CASE WHEN (DATE('now') - M.Fodselsdato) >= 18 AND (DATE('now') - M.Fodselsdato) < 60 THEN true ELSE false END
       WHEN AG.Navn = '60 +' THEN CASE WHEN (DATE('now') - M.Fodselsdato) >= 60 THEN true ELSE false END
       ELSE false
-    END AS KontigentGyldigType,
+    END AS KontingentGyldigType,
     K.KontingentNOK,
     B.BelopNOK, 
     K.KontingentNOK == B.BelopNOK as BetaltGyldigBelop
 FROM
   Medlem AS M
   LEFT JOIN Betaling AS B ON M.id = B.MedlemsId
-  LEFT JOIN Kontigent AS K ON K.Id = B.KontigentId
+  LEFT JOIN Kontingent AS K ON K.Id = B.KontingentId
   LEFT JOIN Medlemstype AS MT ON MT.Id = m.MedlemstypeId
   LEFT JOIN Aldersgruppe AS AG ON AG.Id = MT.AldersgruppeId
 WHERE
   M.id = 57
-  -- KontigentGyldig = false
 ;
 ```
 

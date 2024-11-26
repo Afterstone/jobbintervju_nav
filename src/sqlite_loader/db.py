@@ -24,8 +24,8 @@ def _create_table_kjonn(c: sqlite3.Cursor):
     c.execute((SQLS_FOLDER_PATH / 'create_table_kjonn.sql').read_text())
 
 
-def _create_table_kontigent(c: sqlite3.Cursor):
-    c.execute((SQLS_FOLDER_PATH / 'create_table_kontigent.sql').read_text())
+def _create_table_kontingent(c: sqlite3.Cursor):
+    c.execute((SQLS_FOLDER_PATH / 'create_table_kontingent.sql').read_text())
 
 
 def _create_table_medlem(c: sqlite3.Cursor):
@@ -54,7 +54,7 @@ def init_database(db_path: Path, overwrite: bool = False):
             _create_table_aldergruppe(c)
             _create_table_medlemstype(c)
             _create_table_kjonn(c)
-            _create_table_kontigent(c)
+            _create_table_kontingent(c)
             _create_table_medlem(c)
             _create_table_betaling(c)
             c.execute('commit')
