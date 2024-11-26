@@ -18,10 +18,6 @@ class Args:
     csv_separator: str
 
     def __post_init__(self):
-        print(f"{self.path_medlemmer_csv=}")
-        print(f"{self.path_kontigent_csv=}")
-        print(f"{self.path_betalinger_csv=}")
-
         file_not_found_message = 'Fant ikke filen(e) {}. Sjekk at filstien er riktig.'
         if not all((
             self.path_medlemmer_csv.exists(),
