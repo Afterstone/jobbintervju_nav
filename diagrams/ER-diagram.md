@@ -2,12 +2,12 @@
 erDiagram
     Poststed         ||--o{ Adresse     : "Ligger på"
     Aldersgruppe     ||--o{ Medlemstype : "Tilhører"
-    Medlemstype      ||--o{ Kontigent   : "Gjelder for"
+    Medlemstype      ||--o{ Kontingent   : "Gjelder for"
     Medlemstype      ||--o{ Medlem      : "Er"
     Kjonn            ||--o{ Medlem      : "Er"
     Adresse          ||--o{ Medlem      : "Bor på"
     Medlem           ||--o{ Betaling    : "Ble gjort av"
-    Kontigent        ||--o{ Betaling    : "Tilhører"
+    Kontingent        ||--o{ Betaling    : "Tilhører"
 ```
 
 ```sql
@@ -45,7 +45,7 @@ CREATE TABLE Kjonn (
 );
 
 
-CREATE TABLE Kontigent (
+CREATE TABLE Kontingent (
     Id                  INTEGER     NOT NULL    PRIMARY KEY,
     MedlemstypeId       INTEGER     NOT NULL,
     Periode             INTEGER     NOT NULL,
@@ -70,11 +70,11 @@ CREATE TABLE Medlem (
 
 CREATE TABLE Betaling (
     Id                  INTEGER     NOT NULL    PRIMARY KEY,
-    KontigentId         INTEGER     NOT NULL,
+    KontingentId         INTEGER     NOT NULL,
     MedlemsId           INTEGER     NOT NULL,
     BelopNOK            INTEGER     NOT NULL,
     InnbetaltDato      TEXT        NOT NULL,
-    FOREIGN KEY (KontigentId) REFERENCES Kontigent(Id),
+    FOREIGN KEY (KontingentId) REFERENCES Kontingent(Id),
     FOREIGN KEY (MedlemsId) REFERENCES Medlem(Id)
 );
 ```
