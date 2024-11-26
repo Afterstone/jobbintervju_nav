@@ -13,8 +13,7 @@ Prosjektet er satt opp med uv som Python pakkebehandler. For å installere uv, s
 Deretter kan prosjektets avhengigheter installeres med:
 
 ```bash
-uv venv
-uv pip install .
+uv sync --no-dev
 ```
 
 ## Bruk
@@ -38,8 +37,7 @@ Man kan naturligvis bytte ut filstiene, om dette er ønskelig.
 For å installere med utviklingsavhengigheter, kjør:
 
 ```bash
-uv sync
-uv pip install -e .[dev]
+uv sync --extra dev
 ```
 
 ### Github Actions
