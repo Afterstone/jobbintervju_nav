@@ -107,7 +107,10 @@ SELECT
       WHEN AG.Navn = '18-60' THEN CASE WHEN (DATE('now') - M.Fodselsdato) >= 18 AND (DATE('now') - M.Fodselsdato) < 60 THEN true ELSE false END
       WHEN AG.Navn = '60 +' THEN CASE WHEN (DATE('now') - M.Fodselsdato) >= 60 THEN true ELSE false END
       ELSE false
-    END AS KontigentGyldig
+    END AS KontigentGyldigType,
+    K.KontingentNOK,
+    B.BelopNOK, 
+    K.KontingentNOK == B.BelopNOK as BetaltGyldigBelop
 FROM
   Medlem AS M
   LEFT JOIN Betaling AS B ON M.id = B.MedlemsId
