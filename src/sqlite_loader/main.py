@@ -18,13 +18,25 @@ class Args:
     csv_separator: str
 
     def __post_init__(self):
-        file_not_found_message = 'Fant ikke filen {}. Sjekk at filstien er riktig.'
+        print(f"{self.path_medlemmer_csv=}")
+        print(f"{self.path_kontigent_csv=}")
+        print(f"{self.path_betalinger_csv=}")
+
+        file_not_found_message = 'Fant ikke filen(e) {}. Sjekk at filstien er riktig.'
         if not all((
             self.path_medlemmer_csv.exists(),
             self.path_kontigent_csv.exists(),
             self.path_betalinger_csv.exists(),
         )):
-            raise FileNotFoundError(file_not_found_message.format(self.path_medlemmer_csv))
+            files_not_found = []
+            if not self.path_medlemmer_csv.exists():
+                files_not_found.append(self.path_medlemmer_csv)
+            if not self.path_kontigent_csv.exists():
+                files_not_found.append(self.path_kontigent_csv)
+            if not self.path_betalinger_csv.exists():
+                files_not_found.append(self.path_betalinger_csv)
+
+            raise FileNotFoundError(file_not_found_message.format(', '.join(map(str, files_not_found))))
 
 
 def parse_args():
@@ -94,6 +106,7 @@ def get_df_medlemmer(
         'Postnummer': 'object',
         'Poststed': 'object'
     }
+    print(csv_path)
     df_medlemmer = pd.read_csv(
         csv_path,
         sep=csv_separator,
